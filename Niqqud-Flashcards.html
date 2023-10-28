@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Niqqud Flashcards</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew">
+    <style>
+        body {
+            background-color: aliceblue;
+        }
+        .center {
+            border: 5px solid;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            height: 70%;
+            max-width: 60%;
+            width: 400px;
+            text-align: center;
+            background-color: white;
+        }
+
+        #letter {
+            font-family: 'Noto Serif Hebrew', serif;
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20em;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="center" id="card">
+        <p id="letter"></p>
+    </div>
+
+    <script>
+        function randomIntFromInterval(min, max) { // min and max included 
+           return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+
+        function getRandomArrayElement(array) {
+            const index = randomIntFromInterval(0, array.length - 1);
+            return array[index];
+        }
+    
+        const hebrewLetters = [
+            'א', 'ב', 'ג', 'ד', 'ה', 
+            'ו', 'ז', 'ח', 'ט', 'י', 
+            'כ', 'ל', 'מ', 'נ', 'ס', 
+            'ע', 'פ', 'צ', 'ק', 'ר', 
+            'ש', 'ת',
+            //'ף', 'ך', 'ם', 'ן', 'ץ'
+        ];
+
+        const niqqudCharacters = [
+            '\u05B0', // Shva
+
+            //'\u05B1', // Reduced Segol
+            //'\u05B2', // Reduced Patach
+            //'\u05B3', // Reduced Kamatz
+
+            //'\u05B4', // Hiriq
+            //'\u05B5', // Tzere
+            //'\u05B6', // Segol
+            '\u05B7', // Patach
+            '\u05B8', // Kamatz
+            //'\u05B9', // Holam
+            //'\u05BB', // Kubutz
+            //''
+        ];
+        
+        const niqqudCharactersShin = [
+            '\u05C1', // Sin dot (right) 
+            '\u05C2', // Sin dot (left) 
+        ];
+
+        const niqqudDagesh = [
+            '',
+            '\u05BC', // Dagesh / Shuruk
+        ];
+
+        const lettersWithDagesh = [
+            'ב', 'כ', 'פ'
+        ];
+
+        const groniot = [
+            'ה', 'ע', 'א',
+            //'ח'
+        ];
+
+
+        function displayRandomHebrewLetter() {
+            const letterElement = document.getElementById('letter');
+
+            const randomLetter = getRandomArrayElement(hebrewLetters);
+            const randomNiqqud = getRandomArrayElement(niqqudCharacters);
+            let randomHebrewWithNiqqud = randomLetter + randomNiqqud;
+
+            if (groniot.includes(randomLetter) && randomNiqqud == '\u05B0' ) {
+                randomHebrewWithNiqqud = randomLetter;
+            }
+            
+            if (randomLetter == "ש") {
+                randomHebrewWithNiqqud += getRandomArrayElement(niqqudCharactersShin);
+            }
+
+            if (lettersWithDagesh.includes(randomLetter)) {
+                randomHebrewWithNiqqud += getRandomArrayElement(niqqudDagesh);
+            }
+
+            letterElement.textContent = randomHebrewWithNiqqud;
+        }
+
+        displayRandomHebrewLetter();
+        document.getElementById("card").addEventListener('click', displayRandomHebrewLetter);
+    </script>
+</body>
+</html>
