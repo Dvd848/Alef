@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,8 +7,14 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew">
     <style>
+        @font-face {
+            font-family: 'DanaYad';
+            src: url('DanaYadAlefAlefAlef-Normal.woff') format('woff'); 
+        }
+
         body {
             background-color: aliceblue;
+            direction: rtl;
         }
         .center {
             border: 5px solid;
@@ -17,15 +23,20 @@
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 30px;
+            margin: 5px;
             height: 70%;
             max-width: 60%;
             width: 400px;
             text-align: center;
             background-color: white;
+            min-width: 150px;
+            min-height: 330px;
+            display: block;
         }
 
         #letter {
-            font-family: 'Noto Serif Hebrew', serif;
+            /*font-family: 'Noto Serif Hebrew', serif;*/
+            /*font-family: 'DanaYad', serif;*/
             margin: 0;
             position: absolute;
             top: 50%;
@@ -33,49 +44,140 @@
             transform: translate(-50%, -50%);
             font-size: 20em;
             user-select: none;
+            
+        }
+
+        #settings_menu {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+
+        #settings {
+            display: none;
+        }
+
+        /* Style for the list items */
+        .checkbox-item {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        /* Style for the checkbox input */
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 5px;
+        }
+
+        .checkbox-item label {
+            display: block;
+            font-size: 25px;
+            background-color: white;
+            border: 1px solid gray;
+            padding: 15px;
+            width: 25px;
+            user-select: none;
+        }
+
+        .font_ktav {
+            font-family: 'DanaYad', sans-serif;
+        }
+        
+        .font_dfus {
+            font-family: 'Noto Serif Hebrew', serif;
+        }
+
+        #niqqud label {
+            font-size: 50px;
+        }
+
+        #settings_buttons {
+            text-align: center; 
+            margin: 20px;
+        }
+
+        #settings_buttons button {
+            padding: 10px;
+            width: 100px;
         }
     </style>
 </head>
 <body>
 
+    <div id="settings_menu">
+        <a href="javascript:void(0)" id="show_settings">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAEEklEQVR
+                                     oQ+2ZWahOURTHXfMQypwpD14oD+Z5nqeUMoVc4sEYHvFCxieKjMlNyhglKfPlAaEoMmcKRWSWmf+v
+                                     zin3OOfsdb7Odwd9u/6d7+y99trrv9c+e6+1v7xyZbzklXH7y+UIlLQHcx74Hz1QSaS2CGOFGh7Bb
+                                     3oeF/KF12mSzsYSmi0DN0QYuUn1s0o7ge0ycFqEkZdV36mkCeC1bkJV4azwI2DQTr1PjjDyqurbhb
+                                     RBqrZwTviahGDSJVRdyvcJw71BLnm/X3nv5fW8JrSJMOKD6hsLH712vhcIj/fer+s5VHhmJZGEAB/
+                                     kEaFPQPltvc8RXggLhKjl43c7ph+LvJfVeg4M6Lun937CUwsJKwFmll2kv0VpCjKQ6CC8d+myEsDw
+                                     ky5lKbfPk771Lp2lmQDLcV1aBFhCp0LWv0t/pu2P1LGt8NalwOoB9NQUzgjtXUrVzm4DYQz5KTT1v
+                                     p96hr7PJdPd6+sUT0IAZV2F8zFambGlAiducD+voLoJAjtPkxgd7GI7nJZ7AkkJtFK/mxHKH6qePf
+                                     yOY/CGaj8sRJ3Io9V2KBsEKkppgTAxRDlLprNwyzhwA8kRVjQPkcfDQwR0OkucBzi4FgpdhMpCS6F
+                                     FhEYOplXO0YoKEK3ujejzUvWcyoQpnOwsu9APOo7AHnUaZzCKULm+4Dx0AroY+7HQzDDGAcmMCZOL
+                                     I/BZHaoZlLMzcfRnUraq0wxDxzeSqZOUwG+DYkTYMVzxT5Qqlt4KwzhMpp8cFRGP84CVQIE0TjUYE
+                                     SayWJXLDX0zImBdQoUyoK/BiDCRbaqcbuib0RLaLcV+nB43Bh8x2+I7gyF/i+D9JwKntKvslwC71j
+                                     8lbgmRvBBQkX25tlGWwkqXFYF2djh2urBCbnFD8LdRtujQCUpyErsOMs6LqFM6aCQeuyKEbaGkqWR
+                                     8nywTkoQA+lyhxDDJkKHFlUZqJJToGCE0UvVkfqaSlIArmMPNy4SNwpeABQRzkwSWGnlxVOFCYJfJ
+                                     egklIVBL8qcFSzhN0o7sA+GXwFLhsKtrMIwPm3A61ZyY2SO+720wIA2R+95EOcMTqwcGSOGJNCxLo
+                                     IMbPPKK2GIlgPvxQHGWmRpss2tAKwFyYu5z8ERxFJIirlX8C7DIMa0EUEAwdVToFdDG3j9X4HaO/G
+                                     GKgyETsUTgXFkTou+u6vC46XYuCQGfxEH9GOQZeVHPEYJ/ZY6nSERaR5BgmyUf9g+pKvpNUjPKk+f
+                                     0HSyQ2JtKUgIopU9Pbwa5jA1e7sbFUJy+YQdYD9Xj4UIhq5e7llmJu52+IAXEVqmVTDzgGny+BNZG
+                                     CPHHB99LaiUbBIhcSRXJYYloKd8FPt58odT/xZTa7FoUZcMDlnFTk8kRSG0qM1SU80CGE5datz+eD
+                                     qwxj/N76QAAAABJRU5ErkJggg==" style="width: 25px">
+        </a>
+    </div>
     <div class="center" id="card">
         <p id="letter"></p>
     </div>
 
-    <script>
-        function randomIntFromInterval(min, max) { // min and max included 
-           return Math.floor(Math.random() * (max - min + 1) + min)
-        }
+    <div id="settings">
+        <h1>הגדרות</h1>
 
-        function getRandomArrayElement(array) {
-            const index = randomIntFromInterval(0, array.length - 1);
-            return array[index];
-        }
-    
+        <h2>אותיות דפוס</h2>
+        <div id="dfus"></div>
+
+        <h2>אותיות כתב</h2>
+        <div id="ktav"></div>
+        <p>הגופן בשימוש הינו <a href="https://alefalefalef.co.il/%D7%93%D7%A0%D7%94-%D7%99%D7%93-%D7%A4%D7%95%D7%A0%D7%98-%D7%97%D7%99%D7%A0%D7%9E%D7%99/">דנה יד</a>,
+        תחת תנאי הרישיון החינמי.</p>
+
+        <h2>ניקוד</h2>
+        <div id="niqqud"></div>
+
+        <div id="settings_buttons">
+            <button id="settings_ok">אישור</button>
+            <button id="settings_cancel">ביטול</button>
+        </div>
+    </div>
+
+    <script>
+            
         const hebrewLetters = [
             'א', 'ב', 'ג', 'ד', 'ה', 
             'ו', 'ז', 'ח', 'ט', 'י', 
             'כ', 'ל', 'מ', 'נ', 'ס', 
             'ע', 'פ', 'צ', 'ק', 'ר', 
             'ש', 'ת',
-            //'ף', 'ך', 'ם', 'ן', 'ץ'
+            'ך', 'ם', 'ן', 'ף', 'ץ'
         ];
 
         const niqqudCharacters = [
             '\u05B0', // Shva
 
-            //'\u05B1', // Reduced Segol
-            //'\u05B2', // Reduced Patach
-            //'\u05B3', // Reduced Kamatz
+            '\u05B1', // Reduced Segol
+            '\u05B2', // Reduced Patach
+            '\u05B3', // Reduced Kamatz
 
-            //'\u05B4', // Hiriq
-            //'\u05B5', // Tzere
-            //'\u05B6', // Segol
+            '\u05B4', // Hiriq
+            '\u05B5', // Tzere
+            '\u05B6', // Segol
             '\u05B7', // Patach
             '\u05B8', // Kamatz
-            //'\u05B9', // Holam
-            //'\u05BB', // Kubutz
-            //''
+            '\u05B9', // Holam
+            '\u05BB', // Kubutz
+            ''
         ];
         
         const niqqudCharactersShin = [
@@ -92,20 +194,121 @@
             'ב', 'כ', 'פ'
         ];
 
-        const groniot = [
-            'ה', 'ע', 'א',
+        const noShva = [
+            'ה', 'ע', 'א'
             //'ח'
         ];
 
+        const noNiqqud = [
+            'ן', 'ף', 'ץ', 'ם'
+        ];
 
-        function displayRandomHebrewLetter() {
+        const mapping = {
+            "dfus": hebrewLetters,
+            "ktav": hebrewLetters,
+            "niqqud": niqqudCharacters.map((x) => 'א' + x)
+        };
+
+        class Settings {
+            static storageKey = "AlefSettings";
+            static fields = ["dfus", "ktav", "niqqud"];
+
+            constructor() {
+                this.allowed = {};
+                for (let field of Settings.fields) {
+                    this.allowed[field] = 0x7FFFFFFF;
+                };
+
+                try
+                {
+                    const settings = localStorage.getItem(Settings.storageKey);
+                    if (settings != null) {
+                        const data = JSON.parse(settings);
+                        for (let field of Settings.fields) {
+                            if (field in data) {
+                                this.allowed[field] = data[field];
+                            }
+                        }
+                    }
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            }
+
+            isAllowed(field, index) {
+                return (this.allowed[field] & (1 << index)) != 0;
+            }
+
+            setAllowed(field, index, value) {
+                this.allowed[field] = this.allowed[field] & ~(1 << index);
+                this.allowed[field] = this.allowed[field] | (Number(value) << index);
+            }
+
+            save() {
+                const settings = {};
+                for (let field of Settings.fields) {
+                    settings[field] = this.allowed[field];
+                };
+                localStorage.setItem(Settings.storageKey, JSON.stringify(settings));
+            }
+        }
+
+        function randomIntFromInterval(min, max) { // min and max included 
+           return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+
+        function getRandomArrayElement(array) {
+            const index = randomIntFromInterval(0, array.length - 1);
+            return array[index];
+        }
+
+        // https://stackoverflow.com/questions/2450954/
+        function shuffle(array) {
+            let currentIndex = array.length,  randomIndex;
+
+            while (currentIndex > 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        function populateLetters(settings, letters) {
+            for (const field of ["ktav", "dfus"]) {
+                for (let i = 0; i < hebrewLetters.length; ++i) {
+                    if (settings.isAllowed(field, i)) {
+                        letters.push({letter: hebrewLetters[i], type: field});
+                    }
+                }
+            }
+            shuffle(letters);
+        }
+
+        function populateNiqqud(settings, niqqud) {
+            niqqud.length = 0;
+            for (let i = 0; i < niqqudCharacters.length; ++i) {
+                if (settings.isAllowed("niqqud", i)) {
+                    niqqud.push(niqqudCharacters[i]);
+                }
+            }
+        }
+
+
+        function displayRandomHebrewLetter(settings, letters, niqqud) {
+            if (letters.length == 0) {
+                populateLetters(settings, letters);
+            }
             const letterElement = document.getElementById('letter');
 
-            const randomLetter = getRandomArrayElement(hebrewLetters);
-            const randomNiqqud = getRandomArrayElement(niqqudCharacters);
+            const item = letters.pop();
+            const randomLetter = item["letter"];
+            const randomNiqqud = getRandomArrayElement(niqqud);
             let randomHebrewWithNiqqud = randomLetter + randomNiqqud;
 
-            if (groniot.includes(randomLetter) && randomNiqqud == '\u05B0' ) {
+            if (noNiqqud.includes(randomLetter) || (noShva.includes(randomLetter) && randomNiqqud == '\u05B0' ) ) {
                 randomHebrewWithNiqqud = randomLetter;
             }
             
@@ -118,10 +321,94 @@
             }
 
             letterElement.textContent = randomHebrewWithNiqqud;
+
+            letterElement.classList.remove("font_ktav");
+            letterElement.classList.remove("font_dfus");
+            letterElement.classList.add(`font_${item["type"]}`)
         }
 
-        displayRandomHebrewLetter();
-        document.getElementById("card").addEventListener('click', displayRandomHebrewLetter);
+        function createCheckbox(settings, container_id, array) {
+            const container = document.getElementById(container_id);
+            container.innerHTML = '';
+
+            for (let i = 0; i < array.length; ++i)
+            {
+                const letter = array[i];
+                const div = document.createElement("div");
+                div.className = "checkbox-item";
+    
+                const label = document.createElement("label");
+                label.setAttribute("for", `checkbox_${container_id}_${i}`);
+                label.textContent = letter;
+                label.classList.add(`font_${container_id}`);
+    
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.id = `checkbox_${container_id}_${i}`;
+                input.name = `checkboxGroup_${container_id}`;
+                if (settings.isAllowed(container_id, i)) {
+                    input.setAttribute("checked", "checked");
+                }
+    
+                div.appendChild(label);
+                div.appendChild(input);
+                container.appendChild(div);
+            }
+        }
+
+        function saveSettings(settings) {
+            for (const [field, values] of Object.entries(mapping)) {
+                for (let i = 0; i < values.length; ++i) {
+                    const checkbox = document.getElementById(`checkbox_${field}_${i}`);
+                    settings.setAllowed(field, i, checkbox.checked);
+                }
+            }
+            settings.save();
+        }
+
+        function setup() {
+            const settings = new Settings();
+            
+            const createCheckboxes = function () {
+                for (const [field, values] of Object.entries(mapping)) {
+                    createCheckbox(settings, field, values);
+                }
+            }
+
+            const toggleSettingsMenu = function (event) {
+                var settingsDiv = document.getElementById("settings");
+                var cardDiv = document.getElementById("card");
+
+                if (window.getComputedStyle(settingsDiv).display === "block") {
+                    settingsDiv.style.display = "none";
+                    cardDiv.style.display = "block";
+                } else {
+                    createCheckboxes();
+                    settingsDiv.style.display = "block";
+                    cardDiv.style.display = "none";
+                }
+            }
+
+            const letters = [];
+            const niqqud = [];
+
+            populateNiqqud(settings, niqqud);
+
+            displayRandomHebrewLetter(settings, letters, niqqud);
+            document.getElementById("card").addEventListener('click', function(){displayRandomHebrewLetter(settings, letters, niqqud);});
+            document.getElementById("show_settings").addEventListener('click', toggleSettingsMenu);
+            document.getElementById("settings_cancel").addEventListener('click', toggleSettingsMenu);
+            document.getElementById("settings_ok").addEventListener('click', function(){
+                saveSettings(settings);
+                toggleSettingsMenu();
+                letters.length = 0;
+                populateNiqqud(settings, niqqud);
+                displayRandomHebrewLetter(settings, letters, niqqud);
+            });
+            createCheckboxes();
+        }
+
+        document.addEventListener("DOMContentLoaded", setup);
     </script>
 </body>
 </html>
