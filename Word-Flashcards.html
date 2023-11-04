@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Flashcards</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew">
+    <link rel="stylesheet" href="css/flashcards.css">
+</head>
+<body>
+
+    <div id="settings_menu">
+        <a href="javascript:void(0)" id="show_settings">
+            <img src="images/settings.png" style="width: 25px">
+        </a>
+    </div>
+    <div class="center" id="card">
+        <p id="card_content" class="font_dfus"></p>
+    </div>
+
+    <div id="settings">
+        <h1>הגדרות</h1>
+
+        <h2>ניקוד</h2>
+        <div id="niqqud"></div>
+
+        <div id="settings_buttons">
+            <button id="settings_ok">אישור</button>
+            <button id="settings_cancel">ביטול</button>
+        </div>
+    </div>
+
+    <script src="js/flashcards.js"></script>
+    <script>
+    const wordList = `
+    אֲוִירוֹן
+    אַקְוַרְיוּם
+    לְטָאָה
+    מַרְאֶה
+    אַרְיֵה
+    לְבִיאָה
+    אַרְנָב
+    אַיָּלָה
+    אֲוָזָה
+    סָבְתָא
+    סַבָּא
+    אִמָּא
+    אַבָּא
+    בַּרְוָז
+    בַּיִת
+    אַמְבַּטְיָה
+    בָּא
+    בַּנָּנָה
+    בָּלוֹן
+    אֲנִי
+    בְּרוֹשׁ
+    שֶׁבַּלּוּל
+    בְּרֵכָה
+    בְּרֹגֶז
+    בַּרְבּוּר
+    עַכְבָּר
+    גַּרְבַּיִם
+    בְּגָדִים
+    אַבְטִיחַ
+    כּוֹבַע
+    שֶׁבַע
+    עַגְבָנִיָּה
+    בַּמְבָּה
+    חָלָב
+    לֵב
+    כּוֹכָב
+    `;
+
+    function populateWords(settings, words) {
+        words.length = 0;
+        const wordArray = wordList.split(/\r?\n/).map((value) => {return value.trim()});
+
+        const disallowedNiqqud = [];
+        for (let i = 0; i < niqqudCharacters.length; ++i) {
+            if (!settings.getAllowed("niqqud", i)) {
+                disallowedNiqqud.push(niqqudCharacters[i]);
+            }
+        }
+
+        const pattern = new RegExp(disallowedNiqqud.join('|'));
+
+        for (let word of wordArray) {
+            if (word == "") {
+                continue;
+            }
+
+            if (pattern.test(word)) {
+                continue;
+            }
+
+            words.push(word);
+        }
+
+        console.log(words);
+    }
+
+    function displayRandomWord(settings, words) {
+        const wordElement = document.getElementById('card_content');
+        if (words.length == 0) {
+            wordElement.textContent = '🙁';
+            return;
+        }
+
+        const randomWord = getRandomArrayElement(words);
+        wordElement.textContent = randomWord;
+    }
+
+    function init() {
+        const settings = setup();
+
+        const words = [];
+
+        populateWords(settings, words);
+
+        displayRandomWord(settings, words);
+        document.getElementById("card").addEventListener('click', function(){
+            displayRandomWord(settings, words);
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === ' ') {
+                displayRandomWord(settings, words);
+            }
+        });
+        document.addEventListener(Settings.eventSettingsSaved, function(){
+            words.length = 0;
+            populateWords(settings, words);
+            displayRandomWord(settings, words);
+        }, false);
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+    </script>
+
+</body>
+</html>
