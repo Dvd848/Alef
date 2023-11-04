@@ -90,7 +90,7 @@
                 continue;
             }
 
-            if (pattern.test(word)) {
+            if (disallowedNiqqud.length > 0 && pattern.test(word)) {
                 continue;
             }
 
