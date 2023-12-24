@@ -29,33 +29,54 @@ function shuffle(array) {
 // Hebrew
 //
 
-const hebrewLetters = [
-    'א', 'ב', 'ג', 'ד', 'ה', 
-    'ו', 'ז', 'ח', 'ט', 'י', 
-    'כ', 'ל', 'מ', 'נ', 'ס', 
-    'ע', 'פ', 'צ', 'ק', 'ר', 
-    'ש', 'ת',
-    'ך', 'ם', 'ן', 'ף', 'ץ'
-];
+const hebrewLetters = {
+    'א': 'alef',
+    'ב': 'bet',
+    'ג': 'gimel',
+    'ד': 'daled',
+    'ה': 'hey',
+    'ו': 'vav',
+    'ז': 'zain',
+    'ח': 'chet',
+    'ט': 'tet',
+    'י': 'yod',
+    'כ': 'kaf',
+    'ל': 'lamed',
+    'מ': 'mem',
+    'נ': 'nun',
+    'ס': 'samech',
+    'ע': 'ain',
+    'פ': 'pe',
+    'צ': 'tzadik',
+    'ק': 'kuf',
+    'ר': 'resh',
+    'ש': 'shin',
+    'ת': 'taf',
+};
 
-const niqqudCharacters = [
-    '\u05B0', // Shva
+// used to populate letter
+niqqudCharacters = {
+    '\u05B0':"",
+    '\u05B1':"hataf_segol",
+    '\u05B2':"hataf_patach",
+    '\u05B3':"hataf_kamatz",
+    '\u05B4':"hirik",
+    '\u05B5':"tzere",
+    '\u05B6':"segol",
+    '\u05B7':"patach",
+    '\u05B8':"kamatz",
+    '\u05B9':"holam",
+    '\u05BB':"kubutz",
+    'ו\u05B9':"holam", // Holam Male
+    'ו\u05BC':"kubutz", // Shuruk
+    '':""
+}
 
-    '\u05B1', // Reduced Segol
-    '\u05B2', // Reduced Patach
-    '\u05B3', // Reduced Kamatz
-
-    '\u05B4', // Hiriq
-    '\u05B5', // Tzere
-    '\u05B6', // Segol
-    '\u05B7', // Patach
-    '\u05B8', // Kamatz
-    'ו' + '\u05B9', // Holam Male
-    '\u05B9', // Holam Haser
-    '\u05BB', // Kubutz
-    'ו' + '\u05BC', // Shuruk
-    ''
-];
+// used for lookup for sound
+niqqudCharacters2 = {
+    '\u05B9':"holam", // Holam Male
+    '\u05BC':"kubutz", // Shuruk
+}
 
 const niqqudCharactersShin = [
     '\u05C1', // Shin dot (right) 
@@ -81,9 +102,9 @@ const noNiqqud = [
 ];
 
 const mapping = {
-    "dfus": hebrewLetters,
-    "ktav": hebrewLetters,
-    "niqqud": niqqudCharacters.map((x) => 'א' + x)
+    "dfus": Object.keys(hebrewLetters),
+    "ktav": Object.keys(hebrewLetters),
+    "niqqud": Object.keys(niqqudCharacters).map((x) => 'א' + x)
 };
 
 //
@@ -187,7 +208,7 @@ function saveSettings(settings) {
 
 function setup() {
     const settings = new Settings();
-    
+
     const createCheckboxes = function () {
         for (const [field, values] of Object.entries(mapping)) {
             createCheckbox(settings, field, values);
@@ -196,20 +217,58 @@ function setup() {
 
     const toggleSettingsMenu = function (event) {
         var settingsDiv = document.getElementById("settings");
-        var cardDiv = document.getElementById("card");
+        var mainDiv = document.getElementById("main");
 
         if (window.getComputedStyle(settingsDiv).display === "block") {
             settingsDiv.style.display = "none";
-            cardDiv.style.display = "flex";
+            mainDiv.style.display = "flex";
         } else {
             createCheckboxes();
             settingsDiv.style.display = "block";
-            cardDiv.style.display = "none";
+            mainDiv.style.display = "none";
         }
+    }
+
+    function findValueBySubstring(substring) {
+        const mergedNiqqudCharacters = { ...niqqudCharacters, ...niqqudCharacters2 };
+        for (const [key, value] of Object.entries(mergedNiqqudCharacters)) {
+            if (key.charCodeAt(0) === substring) {
+                return value;
+            }
+        }
+        return null; // Return null if no match is found
+    }
+
+    const playSound = function (event) {
+        var txt = document.getElementById("card_content").innerText
+        var file_path;
+        var letter_name = hebrewLetters[txt[0]];
+        if (txt[0] === "ש" && txt.charCodeAt(1) === 1474) {
+            letter_name = "sin"
+            txt = txt.slice(0, 1) + txt.slice(2);
+        }
+        if (txt.length > 2) {
+            txt = txt[0] + txt[txt.length - 1];
+        }
+        if (txt.length > 1) {
+            var niqud = findValueBySubstring(txt.charCodeAt(1))
+            if (!niqud) {
+                niqud = "shva";
+            }
+            file_path = letter_name + "_" + niqud;
+        } else {
+            file_path = letter_name;
+        }
+        file_path +=  ".opus";
+        const audioElement = document.createElement('audio');
+        audioElement.src = `audio/${file_path}`;
+        document.body.appendChild(audioElement);
+        audioElement.play();
     }
 
     document.getElementById("show_settings").addEventListener('click', toggleSettingsMenu);
     document.getElementById("settings_cancel").addEventListener('click', toggleSettingsMenu);
+    document.getElementById("play_sound").addEventListener('click', playSound);
     document.getElementById("settings_ok").addEventListener('click', function(){
         saveSettings(settings);
         toggleSettingsMenu();

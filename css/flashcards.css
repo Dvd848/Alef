@@ -27,6 +27,13 @@ body {
     justify-content: center; /* Horizontal center alignment */
 }
 
+#speaker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+}
+
 #card_content {
     /*font-family: 'Noto Serif Hebrew', serif;*/
     /*font-family: 'DanaYad', serif;*/
