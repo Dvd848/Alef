@@ -14,14 +14,20 @@
     </style>
 </head>
 <body>
-
     <div id="settings_menu">
         <a href="javascript:void(0)" id="show_settings">
-            <img src="images/settings.png" style="width: 25px">
+            <img src="images/settings.png" style="width: 25px" alt="הגדרות">
         </a>
     </div>
-    <div class="center" id="card">
-        <p id="card_content" class="content_niqqud"></p>
+    <div class="center" id="main">
+        <div id="speaker">
+            <a href="javascript:void(0)" id="play_sound">
+                <img src="images/speaker_Icon.png" style="width: 85px" alt="השמע צליל">
+            </a>
+        </div>
+        <div id="card">
+            <p id="card_content" class="content_niqqud"></p>
+        </div>
     </div>
 
     <div id="settings">
@@ -48,10 +54,11 @@
     <script>
     function populateLetters(settings, letters) {
         letters.length = 0;
+        const lettersArray = Object.keys(hebrewLetters)
         for (const field of ["ktav", "dfus"]) {
-            for (let i = 0; i < hebrewLetters.length; ++i) {
+            for (let i = 0; i < lettersArray.length; ++i) {
                 if (settings.getAllowed(field, i)) {
-                    letters.push({letter: hebrewLetters[i], type: field});
+                    letters.push({letter: lettersArray[i], type: field});
                 }
             }
         }
@@ -60,9 +67,10 @@
 
     function populateNiqqud(settings, niqqud) {
         niqqud.length = 0;
-        for (let i = 0; i < niqqudCharacters.length; ++i) {
+        const niqqudArray = Object.keys(niqqudCharacters)
+        for (let i = 0; i < niqqudArray.length; ++i) {
             if (settings.getAllowed("niqqud", i)) {
-                niqqud.push(niqqudCharacters[i]);
+                niqqud.push(niqqudArray[i]);
             }
         }
     }
