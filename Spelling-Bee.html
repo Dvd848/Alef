@@ -96,10 +96,11 @@
         async function playWords() {
             const words = wordsBox.value.split("\n").filter(word => word.trim() !== "");
             const delay = parseInt(delayInput.value) * 1000;
-
+            
             for (const word of words) {
                 const utterance = new SpeechSynthesisUtterance(word);
                 utterance.lang = "he-IL";
+                utterance.voice = voices.find(voice => voice.lang.startsWith('he'));
                 speechSynthesis.speak(utterance);
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
@@ -128,6 +129,9 @@
         showWords.addEventListener("click", showWordsOutput);
 
         window.addEventListener("load", loadFromURI);
+        
+        // Needed to load Hebrew voice:
+        const voices = window.speechSynthesis.getVoices();
     </script>
 </body>
 </html>
