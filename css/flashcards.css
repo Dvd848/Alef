@@ -101,3 +101,7 @@ body {
     padding: 10px;
     width: 100px;
 }
+
+#uppercase, #lowercase {
+    direction: ltr;
+}

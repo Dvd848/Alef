@@ -25,6 +25,20 @@ function shuffle(array) {
     return array;
 }
 
+const englishLetters = [
+    'A', 'B', 'C', 'D', 'E', 
+    'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y',
+    'Z'
+];
+
+const mapping_eng = {
+    "uppercase": englishLetters,
+    "lowercase": englishLetters.map((x) => x.toLowerCase())
+};
+
 //
 // Hebrew
 //
@@ -86,27 +100,40 @@ const mapping = {
     "niqqud": niqqudCharacters.map((x) => 'א' + x)
 };
 
+const mappings = {
+    "hebrew": mapping,
+    "english": mapping_eng
+}
+
 //
 // Settings
 //
 
 class Settings {
-    static storageKey = "AlefSettings";
-    static fields = ["dfus", "ktav", "niqqud"];
     static eventSettingsSaved = "SettingsSaved";
 
-    constructor() {
+    constructor(language = "hebrew") {
+        this.language = language;
+
+        if (language == "hebrew") {
+            this.storageKey = "AlefSettings";
+            this.fields = ["dfus", "ktav", "niqqud"];
+        }
+        else if (language == "english") {
+            this.storageKey = "AlefSettings_English";
+            this.fields = ["uppercase", "lowercase"];
+        }
         this.allowed = {};
-        for (let field of Settings.fields) {
+        for (let field of this.fields) {
             this.allowed[field] = 0x7FFFFFFF;
         };
 
         try
         {
-            const settings = localStorage.getItem(Settings.storageKey);
+            const settings = localStorage.getItem(this.storageKey);
             if (settings != null) {
                 const data = JSON.parse(settings);
-                for (let field of Settings.fields) {
+                for (let field of this.fields) {
                     if (field in data) {
                         this.allowed[field] = data[field];
                     }
@@ -129,10 +156,10 @@ class Settings {
 
     save() {
         const settings = {};
-        for (let field of Settings.fields) {
+        for (let field of this.fields) {
             settings[field] = this.allowed[field];
         };
-        localStorage.setItem(Settings.storageKey, JSON.stringify(settings));
+        localStorage.setItem(this.storageKey, JSON.stringify(settings));
         document.dispatchEvent(new Event(Settings.eventSettingsSaved));
     }
 }
@@ -170,7 +197,7 @@ function createCheckbox(settings, container_id, array) {
 }
 
 function saveSettings(settings) {
-    for (const [field, values] of Object.entries(mapping)) {
+    for (const [field, values] of Object.entries(mappings[settings.language])) {
         for (let i = 0; i < values.length; ++i) {
             const checkbox = document.getElementById(`checkbox_${field}_${i}`);
             if (checkbox != null) {
@@ -185,11 +212,11 @@ function saveSettings(settings) {
 // Main Logic
 //
 
-function setup() {
-    const settings = new Settings();
-    
+function setup(language = "hebrew") {
+    const settings = new Settings(language);
+
     const createCheckboxes = function () {
-        for (const [field, values] of Object.entries(mapping)) {
+        for (const [field, values] of Object.entries(mappings[language])) {
             createCheckbox(settings, field, values);
         }
     }

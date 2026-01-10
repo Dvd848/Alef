@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ABC Flashcards</title>
+    <link rel="stylesheet" href="css/flashcards.css">
+    <style>
+        .center {
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="settings_menu">
+        <a href="javascript:void(0)" id="show_settings">
+            <img src="images/settings.png" style="width: 25px">
+        </a>
+    </div>
+    <div class="center" id="card">
+        <p id="card_content" class="content_niqqud"></p>
+    </div>
+
+    <div id="settings">
+        <h1>הגדרות</h1>
+
+        <h2>אותיות רישיות</h2>
+        <div id="uppercase"></div>
+
+        <h2>אותיות קטנות</h2>
+        <div id="lowercase"></div>
+
+        <div id="settings_buttons">
+            <button id="settings_ok">אישור</button>
+            <button id="settings_cancel">ביטול</button>
+            <button id="clear_all">איפוס</button>
+        </div>
+    </div>
+
+    <script src="js/flashcards.js"></script>
+    <script>
+    function populateLetters(settings, letters) {
+        letters.length = 0;
+        for (const field of ["uppercase", "lowercase"]) {
+            for (let i = 0; i < englishLetters.length; ++i) {
+                if (settings.getAllowed(field, i)) {
+                    if (field === "uppercase") {
+                        letters.push({letter: englishLetters[i], type: field});
+                    } else {
+                        letters.push({letter: englishLetters[i].toLowerCase(), type: field});
+                    }
+                }
+            }
+        }
+        shuffle(letters);
+    }
+
+    function displayRandomEnglishLetter(settings, letters) {
+        if (letters.length == 0) {
+            populateLetters(settings, letters);
+        }
+        const letterElement = document.getElementById('card_content');
+        if (letters.length == 0) {
+            letterElement.textContent = '🙁';
+            return;
+        }
+
+        const item = letters.pop();
+        const randomLetter = item["letter"];
+                
+        letterElement.textContent = randomLetter;
+    }
+
+    function init() {
+        const settings = setup("english");
+
+        const letters = [];
+
+        displayRandomEnglishLetter(settings, letters);
+        document.getElementById("card").addEventListener('click', function(){
+            displayRandomEnglishLetter(settings, letters);
+        });
+        document.addEventListener(Settings.eventSettingsSaved, function(){
+            letters.length = 0;
+            displayRandomEnglishLetter(settings, letters);
+        }, false);
+
+        document.getElementById("clear_all").addEventListener('click', function(){
+            const checkboxes = document.querySelectorAll('#settings input[type="checkbox"]');
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+    </script>
+
+</body>
+</html>
